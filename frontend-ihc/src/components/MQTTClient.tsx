@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import mqtt, { MqttClient } from "mqtt";
+import { db } from "@/utils/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 interface SensorData {
     temperatura: string;
@@ -34,6 +36,31 @@ const MQTTClient = () => {
         "topico/cpd/timestamp",
     ];
 
+    // Func to save on Firebase
+    const saveToFirestore = async (data: SensorData) => {
+        try {
+            // Only save if sensor data
+            if (data.temperatura || data.humedad || data.presion || data.luminosidad) {
+                await addDoc(collection(db, "sensorData"), {
+                    ...data,
+                    createdAt: new Date().toISOString()
+                });
+                console.log("Save data on Firebase");
+            }
+        } catch (error) {
+            console.error("Error saving on Firebase:", error);
+        }
+    };
+
+    // useEffect to save if something change on sensor
+    useEffect(() => {
+        if (sensorData.temperatura && sensorData.humedad && 
+            sensorData.presion && sensorData.luminosidad && 
+            sensorData.timestamp) {
+            saveToFirestore(sensorData);
+        }
+    }, [sensorData]);
+
     useEffect(() => {
         const mqttClient = mqtt.connect(MQTT_BROKER);
 
@@ -64,8 +91,6 @@ const MQTTClient = () => {
                     timestamp: new Date(),
                 },
             ]);
-
-            // TODO: push to database
 
             const topicName = topic.split("/").pop();
             if (topicName) {
