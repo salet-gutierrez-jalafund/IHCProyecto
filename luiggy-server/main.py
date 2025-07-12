@@ -8,7 +8,7 @@ if __name__ == "__main__":
     listener = SensorListener(
         serial_port="/dev/ttyUSB0",
         baud_rate=9600,
-        mqtt_broker=os.getenv("MOSQUITO_HOST","localhost"),
+        mqtt_broker=os.getenv("MOSQUITO_HOST", "localhost"),
         mqtt_port=1883,
         timeout=1.0,
     )

@@ -11,8 +11,6 @@ load_dotenv()
 
 from mqtt_topics import TOPICS
 
-print(os.getenv("MOSQUITO_HOST", "localhost"))
-
 class SensorListener:
     def __init__(
         self,
