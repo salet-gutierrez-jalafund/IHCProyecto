@@ -1,6 +1,11 @@
-def main():
-    print("Hello from luiggy-server!")
-
+from sensor_listener import SensorListener
 
 if __name__ == "__main__":
-    main()
+    listener = SensorListener(
+        serial_port="/dev/ttyUSB0",
+        baud_rate=9600,
+        mqtt_broker="localhost",
+        mqtt_port=1883,
+        timeout=1.0,
+    )
+    listener.listen()
