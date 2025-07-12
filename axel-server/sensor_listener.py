@@ -6,14 +6,17 @@ from rich import print
 from rich.panel import Panel
 
 from mqtt_topics import TOPICS
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
 class SensorListener:
     def __init__(
         self,
         serial_port: str = "/dev/ttyUSB0",
         baud_rate: int = 9600,
-        mqtt_broker: str = "localhost",
+        mqtt_broker: str = os.getenv("MOSQUITO_HOST","localhost"),
         mqtt_port: int = 1883,
         timeout: float = 1.0,
     ):

@@ -8,12 +8,14 @@ import { collection, addDoc } from "firebase/firestore";
 interface SensorData {
     temperatura: string;
     humedad: string;
-    presion: string;
+    distance: string;
+    gas: string;
     luminosidad: string;
     timestamp: string;
 }
 
 const MQTTClient = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [client, setClient] = useState<MqttClient | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState<
@@ -22,7 +24,8 @@ const MQTTClient = () => {
     const [sensorData, setSensorData] = useState<SensorData>({
         temperatura: "",
         humedad: "",
-        presion: "",
+        distance: "",
+        gas: "",
         luminosidad: "",
         timestamp: "",
     });
@@ -31,7 +34,8 @@ const MQTTClient = () => {
     const TOPICS = [
         "topico/cpd/temperatura",
         "topico/cpd/humedad",
-        "topico/cpd/presion",
+        "topico/cpd/distance",
+        "topico/cpd/gas",
         "topico/cpd/luminosidad",
         "topico/cpd/timestamp",
     ];
@@ -40,7 +44,7 @@ const MQTTClient = () => {
     const saveToFirestore = async (data: SensorData) => {
         try {
             // Only save if sensor data
-            if (data.temperatura || data.humedad || data.presion || data.luminosidad) {
+            if (data.temperatura || data.humedad || data.distance || data.luminosidad) {
                 await addDoc(collection(db, "sensorData"), {
                     ...data,
                     createdAt: new Date().toISOString()
@@ -55,7 +59,7 @@ const MQTTClient = () => {
     // useEffect to save if something change on sensor
     useEffect(() => {
         if (sensorData.temperatura && sensorData.humedad && 
-            sensorData.presion && sensorData.luminosidad && 
+            sensorData.distance && sensorData.luminosidad && 
             sensorData.timestamp) {
             saveToFirestore(sensorData);
         }
@@ -158,9 +162,15 @@ const MQTTClient = () => {
                     </p>
                 </div>
                 <div className="bg-yellow-50 p-4 rounded-lg border">
-                    <h3 className="font-semibold text-yellow-800">Presión</h3>
+                    <h3 className="font-semibold text-yellow-800">Distance CM</h3>
                     <p className="text-2xl font-bold text-yellow-600">
-                        {sensorData.presion || "--"}
+                        {sensorData.distance || "--"}
+                    </p>
+                </div>
+                <div className="bg-yellow-50 p-4 rounded-lg border">
+                    <h3 className="font-semibold text-yellow-800">Gas</h3>
+                    <p className="text-2xl font-bold text-orange-500">
+                        {sensorData.gas || "--"}
                     </p>
                 </div>
                 <div className="bg-purple-50 p-4 rounded-lg border">

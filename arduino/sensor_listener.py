@@ -4,6 +4,10 @@ import paho.mqtt.client as mqtt
 from rich import print
 from rich.panel import Panel
 import json
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 TOPICS = {
     "distance": "topico/cpd/distance",
@@ -16,10 +20,11 @@ class SensorListener:
         self,
         serial_port: str = "/dev/ttyUSB0",
         baud_rate: int = 9600,
-        mqtt_broker: str = "localhost",
+        mqtt_broker: str = os.getenv("MOSQUITO_HOST","localhost"),
         mqtt_port: int = 1883,
         timeout: float = 1.0,
     ):
+        print(os.getenv("MOSQUITO_HOST"))
         self.serial_port = serial_port
         self.baud_rate = baud_rate
         self.mqtt_broker = mqtt_broker
@@ -111,7 +116,7 @@ if __name__ == "__main__":
     listener = SensorListener(
         serial_port="/dev/ttyUSB0",  # Cambia a COM3, COM4, etc. en Windows
         baud_rate=9600,
-        mqtt_broker="localhost",
+        mqtt_broker=os.getenv("MOSQUITO_HOST","localhost"),
         mqtt_port=1883,
         timeout=1.0,
     )
