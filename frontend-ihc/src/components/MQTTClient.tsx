@@ -44,10 +44,15 @@ const MQTTClient = () => {
     const saveToFirestore = async (data: SensorData) => {
         try {
             // Only save if sensor data
-            if (data.temperatura || data.humedad || data.distance || data.luminosidad) {
+            if (
+                data.temperatura ||
+                data.humedad ||
+                data.distance ||
+                data.luminosidad
+            ) {
                 await addDoc(collection(db, "sensorData"), {
                     ...data,
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
                 });
                 console.log("Save data on Firebase");
             }
@@ -58,9 +63,13 @@ const MQTTClient = () => {
 
     // useEffect to save if something change on sensor
     useEffect(() => {
-        if (sensorData.temperatura && sensorData.humedad && 
-            sensorData.distance && sensorData.luminosidad && 
-            sensorData.timestamp) {
+        if (
+            sensorData.temperatura &&
+            sensorData.humedad &&
+            sensorData.distance &&
+            sensorData.luminosidad &&
+            sensorData.timestamp
+        ) {
             saveToFirestore(sensorData);
         }
     }, [sensorData]);
@@ -134,7 +143,6 @@ const MQTTClient = () => {
                 Monitor de Sensores MQTT
             </h1>
 
-            {/* Estado de conexión */}
             <div className="mb-6 text-center">
                 <span
                     className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
@@ -147,8 +155,7 @@ const MQTTClient = () => {
                 </span>
             </div>
 
-            {/* Datos actuales de sensores */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                 <div className="bg-blue-50 p-4 rounded-lg border">
                     <h3 className="font-semibold text-blue-800">Temperatura</h3>
                     <p className="text-2xl font-bold text-blue-600">
@@ -162,7 +169,9 @@ const MQTTClient = () => {
                     </p>
                 </div>
                 <div className="bg-yellow-50 p-4 rounded-lg border">
-                    <h3 className="font-semibold text-yellow-800">Distance CM</h3>
+                    <h3 className="font-semibold text-yellow-800">
+                        Distance CM
+                    </h3>
                     <p className="text-2xl font-bold text-yellow-600">
                         {sensorData.distance || "--"}
                     </p>
@@ -181,15 +190,8 @@ const MQTTClient = () => {
                         {sensorData.luminosidad || "--"}
                     </p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg border md:col-span-2 lg:col-span-2">
-                    <h3 className="font-semibold text-gray-800">Timestamp</h3>
-                    <p className="text-lg font-bold text-gray-600">
-                        {sensorData.timestamp || "--"}
-                    </p>
-                </div>
             </div>
 
-            {/* Historial de mensajes */}
             <div className="bg-white border rounded-lg">
                 <div className="flex justify-between items-center p-4 border-b">
                     <h2 className="text-xl font-semibold">
