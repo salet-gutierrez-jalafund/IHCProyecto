@@ -1,22 +1,43 @@
+#include <ArduinoJson.h>
+
+const int TriggerPin = 2;
+const int EchoPin = 3;
+
+long duration, distanceCm;
+
 void setup() {
   Serial.begin(9600);
+  pinMode(TriggerPin, OUTPUT);
+  pinMode(EchoPin, INPUT);
+  randomSeed(analogRead(0));
+  delay(2000);
 }
 
 void loop() {
-  delay(2000);
+  StaticJsonDocument<200> doc;
   
-  float temperatura = random(20, 30);
-  float humedad = random(40, 80);
-  long gas = random(100, 1000);
+  distanceCm = ping(TriggerPin, EchoPin);
+  doc["distance"] = distanceCm;
+  doc["gas"] = random(100, 1000);
+  doc["timestamp"] = millis();
   
-  Serial.print(" Temperatura: ");
-  Serial.print(temperatura);
-  Serial.println(" C ");
-  Serial.print(" Humedad: ");
-  Serial.print(humedad);
-  Serial.println(" % ");
-  Serial.print(" Gas: ");
-  Serial.print(gas);
-  Serial.println(" ppm");
-  Serial.println(" ---------------------------");
+  String jsonOutput;
+  serializeJson(doc, jsonOutput);
+  Serial.println(jsonOutput);
+
+  delay(1000);
+}
+
+int ping(int TriggerPin, int EchoPin) {
+  digitalWrite(TriggerPin, LOW);
+  delayMicroseconds(4);
+  digitalWrite(TriggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TriggerPin, LOW);
+  duration = pulseIn(EchoPin, HIGH);
+  distanceCm = (duration * 0.0343) / 2;
+  if (distanceCm <= 0 || distanceCm > 400) {
+    distanceCm = 0;
+  }
+  return distanceCm;
 }
