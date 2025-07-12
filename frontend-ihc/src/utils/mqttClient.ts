@@ -16,7 +16,7 @@ export const connectMQTT = (): MqttClient => {
     if (client) return client;
 
     const options: MQTTOptions = {
-        host: "localhost",
+        host: process.env.NEXT_MOSQUITO_HOST ?? "localhost",
         port: 1883,
         protocol: "mqtt",
         clientId: `nextjs_client_${Math.random().toString(16).substr(2, 8)}`,

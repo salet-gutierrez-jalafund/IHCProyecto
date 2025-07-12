@@ -4,16 +4,21 @@ import json
 import paho.mqtt.client as mqtt
 from rich import print
 from rich.panel import Panel
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 from mqtt_topics import TOPICS
 
+print(os.getenv("MOSQUITO_HOST", "localhost"))
 
 class SensorListener:
     def __init__(
         self,
         serial_port: str = "/dev/ttyUSB0",
         baud_rate: int = 9600,
-        mqtt_broker: str = "localhost",
+        mqtt_broker: str = os.getenv("MOSQUITO_HOST", "localhost"),
         mqtt_port: int = 1883,
         timeout: float = 1.0,
     ):
