@@ -1,10 +1,9 @@
-import MqttComponent from "./Component/MqttComponent";
+import MQTTClient from "@/components/MQTTClient";
 
 export default function Home() {
-  return (
-    <>
-      <MqttComponent/>
-    </>
-    
-  );
+    return (
+        <main className="min-h-screen bg-gray-100">
+            <MQTTClient />
+        </main>
+    );
 }
